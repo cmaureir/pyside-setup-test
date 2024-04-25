@@ -49,6 +49,11 @@ jobs:
       - name: Test Qt Deps
         if: matrix.os == 'ubuntu-latest'
         run: |
+          ls env/lib/python${{ matrix.python-version }}/
+          ls env/lib/python${{ matrix.python-version }}/site-packages/
+          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/
+          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/
+          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/
           ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/
           ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb*
       - name: Test PySide
