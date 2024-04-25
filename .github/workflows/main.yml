@@ -39,6 +39,7 @@ jobs:
           python -m pip install pytest
           pytest test_wheel.py
       - name: Test Tools
+        run: |
           pyside6-android-deploy -h
           pyside6-assistant -h
           pyside6-deploy -h
@@ -89,6 +90,7 @@ jobs:
           python -m pip install pytest
           pytest test_wheel.py
       - name: Test Tools
+        run: |
           pyside6-android-deploy -h
           pyside6-assistant -h
           pyside6-deploy -h
