@@ -50,7 +50,7 @@ jobs:
         run: |
           python -m pip install pytest
           pytest test_wheel.py
-      - name: Test Tools: Qt wrappers
+      - name: Test Tools (Qt wrappers)
         run: |
           pyside6-assistant -h
           pyside6-designer -h
@@ -65,7 +65,7 @@ jobs:
           pyside6-qmlformat -h
           pyside6-qmllint -h
           pyside6-qmlls -h
-      - name: Test Tools: PySide tools
+      - name: Test Tools (PySide tools)
         run: |
           pyside6-deploy -h
           pyside6-genpyi -h
