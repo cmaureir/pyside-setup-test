@@ -38,6 +38,27 @@ jobs:
         run: |
           python -m pip install pytest
           pytest test_wheel.py
+      - name: Test Tools
+          pyside6-android-deploy -h
+          pyside6-assistant -h
+          pyside6-deploy -h
+          pyside6-designer -h
+          pyside6-genpyi -h
+          pyside6-linguist -h
+          pyside6-lrelease -h
+          pyside6-lupdate -h
+          pyside6-metaobjectdump -h
+          pyside6-project -h
+          pyside6-qml -h
+          pyside6-qmlcachegen -h
+          pyside6-qmlformat -h
+          pyside6-qmlimportscanner -h
+          pyside6-qmllint -h
+          pyside6-qmlls -h
+          pyside6-qmltyperegistrar -h
+          pyside6-qtpy2cpp -h
+          pyside6-rcc -h
+          pyside6-uic -h
 
   test-win:
     runs-on: windows-latest
@@ -67,3 +88,24 @@ jobs:
         run: |
           python -m pip install pytest
           pytest test_wheel.py
+      - name: Test Tools
+          pyside6-android-deploy -h
+          pyside6-assistant -h
+          pyside6-deploy -h
+          pyside6-designer -h
+          pyside6-genpyi -h
+          pyside6-linguist -h
+          pyside6-lrelease -h
+          pyside6-lupdate -h
+          pyside6-metaobjectdump -h
+          pyside6-project -h
+          pyside6-qml -h
+          pyside6-qmlcachegen -h
+          pyside6-qmlformat -h
+          pyside6-qmlimportscanner -h
+          pyside6-qmllint -h
+          pyside6-qmlls -h
+          pyside6-qmltyperegistrar -h
+          pyside6-qtpy2cpp -h
+          pyside6-rcc -h
+          pyside6-uic -h
