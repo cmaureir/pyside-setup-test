@@ -24,10 +24,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      # Commenting this until we require an assistant test
-      #- name: Install Qt dependencies
-      #  if: matrix.os == 'ubuntu-latest'
-      #  run: sudo apt-get install -y libegl1 libxcb1-dev libxcb-cursor-dev
+      - name: Install Qt dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y libgl1-mesa-dev libvulkan-dev libxcb-xinput-dev libxcb-xinerama0-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1 libxcb-randr0 libxcb-icccm4 xvfb
       - name: Setup virtual environment (Unix)
         if: matrix.os != 'windows-latest'
         run: |
@@ -51,9 +50,9 @@ jobs:
         run: |
           python -m pip install pytest
           pytest test_wheel.py
-      # pyside6-assistant -h disabled due to heave xcb dependencies
       - name: Test Tools (Qt wrappers)
         run: |
+          pyside6-assistant -h
           pyside6-designer -h
           pyside6-linguist -h
           pyside6-lrelease -h
