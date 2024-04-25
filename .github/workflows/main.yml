@@ -50,41 +50,36 @@ jobs:
       - name: Test Qt Deps
         if: matrix.os == 'ubuntu-latest'
         run: |
-          ls env/lib/python${{ matrix.python-version }}/
-          ls env/lib/python${{ matrix.python-version }}/site-packages/
-          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/
-          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/
-          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/
-          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/
           ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb*
+          ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/assistant
       - name: Test PySide
         run: |
-          python -m pip install pytest
-          pytest test_wheel.py
+          env/bin/python -m pip install pytest
+          env/bin/pytest test_wheel.py
       - name: Test Tools (Qt wrappers)
         run: |
-          pyside6-assistant -h
-          pyside6-designer -h
-          pyside6-linguist -h
-          pyside6-lrelease -h
-          pyside6-lupdate -h
-          pyside6-rcc -h
-          pyside6-uic -h
-          pyside6-qmltyperegistrar -h
-          pyside6-qmlimportscanner -h
-          pyside6-qmlcachegen -h
-          pyside6-qmlformat -h
-          pyside6-qmllint -h
-          pyside6-qmlls -h
+          env/bin/pyside6-assistant -h
+          env/bin/pyside6-designer -h
+          env/bin/pyside6-linguist -h
+          env/bin/pyside6-lrelease -h
+          env/bin/pyside6-lupdate -h
+          env/bin/pyside6-rcc -h
+          env/bin/pyside6-uic -h
+          env/bin/pyside6-qmltyperegistrar -h
+          env/bin/pyside6-qmlimportscanner -h
+          env/bin/pyside6-qmlcachegen -h
+          env/bin/pyside6-qmlformat -h
+          env/bin/pyside6-qmllint -h
+          env/bin/pyside6-qmlls -h
       - name: Test Tools (PySide tools)
         run: |
-          pyside6-deploy -h
-          pyside6-genpyi -h
-          pyside6-metaobjectdump -h
-          pyside6-project -h
-          pyside6-qml -h
-          pyside6-qtpy2cpp -h
+          env/bin/pyside6-deploy -h
+          env/bin/pyside6-genpyi -h
+          env/bin/pyside6-metaobjectdump -h
+          env/bin/pyside6-project -h
+          env/bin/pyside6-qml -h
+          env/bin/pyside6-qtpy2cpp -h
       - name: Test Tools (Android, Unix-only)
         if: matrix.os != 'windows-latest'
         run: |
-          pyside6-android-deploy -h
+          env/bin/pyside6-android-deploy -h
