@@ -26,7 +26,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Qt dependencies
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libgl1-mesa-dev libvulkan-dev libxcb-xinput-dev libxcb-xinerama0-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1 libxcb-randr0 libxcb-icccm4 xvfb
+        run: sudo apt-get install -y libgl1-mesa-dev libvulkan-dev libxcb-xinput-dev libxcb-cursor-dev libxcb-image0-dev libxcb-xinerama0-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1 libxcb-randr0 libxcb-icccm4 xvfb
       - name: Setup virtual environment (Unix)
         if: matrix.os != 'windows-latest'
         run: |
