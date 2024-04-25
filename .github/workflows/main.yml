@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         # TODO: Add 'pypy3.10' and 'pypy3.9" when the wheels are available
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         include:
@@ -25,10 +25,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install libEGL
-        if: matrix.os == ubuntu-latest
+        if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y libegl1
       - name: Setup virtual environment (Unix)
-        if: matrix.os != windows-latest
+        if: matrix.os != 'windows-latest'
         run: |
           python -m venv env
           source env/bin/activate
@@ -36,7 +36,7 @@ jobs:
           python -c "import sys; print(sys.version)"
           python -m pip install pip -U
       - name: Setup virtual environment (Win)
-        if: matrix.os == windows-latest
+        if: matrix.os == 'windows-latest'
         run: |
           python -m venv env
           env\Scripts\activate
@@ -74,6 +74,6 @@ jobs:
           pyside6-qml -h
           pyside6-qtpy2cpp -h
       - name: Test Tools (Android, Unix-only)
-        if: matrix.os != windows-latest
+        if: matrix.os != 'windows-latest'
         run: |
           pyside6-android-deploy -h
