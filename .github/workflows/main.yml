@@ -33,11 +33,11 @@ jobs:
           python -m pip install pip -U
       - name: Install PySide
         run: |
-          # TODO: This needs to be snapshot-based
-          python -m pip install PySide6
+          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
       - name: Test PySide
         run: |
-          python test_wheel.py
+          python -m pip install pytest
+          pytest test_wheel.py
 
   test-win:
     runs-on: windows-latest
@@ -62,7 +62,8 @@ jobs:
       - name: Install PySide
         run: |
           # TODO: This needs to be snapshot-based
-          python -m pip install PySide6
+          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
       - name: Test PySide
         run: |
-          python test_wheel.py
+          python -m pip install pytest
+          pytest test_wheel.py
