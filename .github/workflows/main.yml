@@ -45,11 +45,12 @@ jobs:
           python -m pip install pip -U
       - name: Install PySide
         run: |
-        if: matrix.os == 'ubuntu-latest'
           python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-          echo $pwd
+      - name: Test Qt Deps
+        run: |
+        if: matrix.os == 'ubuntu-latest'
           ls
-          find . -type f -name *libqxcb*
+          find . -type f -name libqxcb.so
           ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb.so
       - name: Test PySide
         run: |
