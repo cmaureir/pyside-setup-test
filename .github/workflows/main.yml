@@ -91,23 +91,23 @@ jobs:
           pytest test_wheel.py
       - name: Test Tools
         run: |
-          pyside6-android-deploy -h
-          pyside6-assistant -h
-          pyside6-deploy -h
-          pyside6-designer -h
-          pyside6-genpyi -h
-          pyside6-linguist -h
-          pyside6-lrelease -h
-          pyside6-lupdate -h
-          pyside6-metaobjectdump -h
-          pyside6-project -h
-          pyside6-qml -h
-          pyside6-qmlcachegen -h
-          pyside6-qmlformat -h
-          pyside6-qmlimportscanner -h
-          pyside6-qmllint -h
-          pyside6-qmlls -h
-          pyside6-qmltyperegistrar -h
-          pyside6-qtpy2cpp -h
-          pyside6-rcc -h
-          pyside6-uic -h
+          pyside6-android-deploy.exe -h
+          pyside6-assistant.exe -h
+          pyside6-deploy.exe -h
+          pyside6-designer.exe -h
+          pyside6-genpyi.exe -h
+          pyside6-linguist.exe -h
+          pyside6-lrelease.exe -h
+          pyside6-lupdate.exe -h
+          pyside6-metaobjectdump.exe -h
+          pyside6-project.exe -h
+          pyside6-qml.exe -h
+          pyside6-qmlcachegen.exe -h
+          pyside6-qmlformat.exe -h
+          pyside6-qmlimportscanner.exe -h
+          pyside6-qmllint.exe -h
+          pyside6-qmlls.exe -h
+          pyside6-qmltyperegistrar.exe -h
+          pyside6-qtpy2cpp.exe -h
+          pyside6-rcc.exe -h
+          pyside6-uic.exe -h
