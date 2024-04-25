@@ -49,9 +49,8 @@ jobs:
       - name: Test Qt Deps
         if: matrix.os == 'ubuntu-latest'
         run: |
-          find . -type f -name libqxcb.so
-          ls env/lib/
-          ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb.so
+          ls env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/
+          ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb*
       - name: Test PySide
         run: |
           python -m pip install pytest
