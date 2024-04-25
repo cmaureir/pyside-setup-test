@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install libEGL
+      - name: Install Qt dependencies
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libegl1
+        run: sudo apt-get install -y libegl1 libxcb1-dev libxcb-cursor-dev
       - name: Setup virtual environment (Unix)
         if: matrix.os != 'windows-latest'
         run: |
