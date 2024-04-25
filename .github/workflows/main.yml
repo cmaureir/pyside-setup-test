@@ -50,7 +50,6 @@ jobs:
       - name: Test Qt Deps
         if: matrix.os == 'ubuntu-latest'
         run: |
-          ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/Qt/plugins/platforms/libqxcb*
           ldd env/lib/python${{ matrix.python-version }}/site-packages/PySide6/assistant
       - name: Test PySide
         run: |
