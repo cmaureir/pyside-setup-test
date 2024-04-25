@@ -22,11 +22,11 @@ jobs:
           source env/bin/activate
           which python
           python -c "import sys; print(sys.version)"
-          python -m pip install -U
+          python -m pip install pip -U
       - name: Install PySide
         run: |
           # TODO: This needs to be snapshot-based
-          pip install PySide6
+          python -m pip install PySide6
       - name: Test PySide
         run: |
           python test_wheel.py
