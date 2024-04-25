@@ -3,12 +3,14 @@ name: Python package
 on: [push]
 
 jobs:
-  build:
+  test-unix:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["pypy3.9", "pypy3.10", "3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, macos-latest]
+        # TODO: Add 'pypy3.10'
+        python-version: ["pypy3.9", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -30,3 +32,31 @@ jobs:
       - name: Test PySide
         run: |
           python test_wheel.py
+
+  test-win:
+    runs-on: windows-latest
+      strategy:
+        matrix:
+          # TODO: Add 'pypy3.10'
+          python-version: ["pypy3.9", "3.9", "3.10", "3.11", "3.12"]
+
+      steps:
+        - uses: actions/checkout@v4
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v4
+          with:
+            python-version: ${{ matrix.python-version }}
+        - name: Setup virtual environment
+          run: |
+            python -m venv env
+            env\Scripts\activate
+            where python
+            python -c "import sys; print(sys.version)"
+            python -m pip install pip -U
+        - name: Install PySide
+          run: |
+            # TODO: This needs to be snapshot-based
+            python -m pip install PySide6
+        - name: Test PySide
+          run: |
+            python test_wheel.py
