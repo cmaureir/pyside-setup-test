@@ -45,7 +45,8 @@ jobs:
           python -m pip install pip -U
       - name: Install PySide
         run: |
-          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+          #python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+          env/bin/python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
       - name: Test Qt Deps
         if: matrix.os == 'ubuntu-latest'
         run: |
