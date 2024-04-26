@@ -102,26 +102,26 @@ jobs:
           # env\Scripts\pyside6-assistant.exe -help
       - name: Test Tools (Qt non-graphical wrappers, Unix)
         if: matrix.os != 'windows-latest'
+        # env/bin/pyside6-lrelease -help
+        # env/bin/pyside6-lupdate -h
+        # env/bin/pyside6-qmlimportscanner -h
         run: |
-          #env/bin/pyside6-lrelease -help
-          #env/bin/pyside6-lupdate -h
           env/bin/pyside6-rcc -h
           env/bin/pyside6-uic -h
           env/bin/pyside6-qmltyperegistrar -h
-          #env/bin/pyside6-qmlimportscanner -h
           env/bin/pyside6-qmlcachegen -h
           env/bin/pyside6-qmlformat -h
           env/bin/pyside6-qmllint -h
           env/bin/pyside6-qmlls -h
       - name: Test Tools (Qt non-graphical wrappers, Unix)
         if: matrix.os == 'windows-latest'
+        # env\Scripts\pyside6-lrelease.exe -help
+        # env\Scripts\pyside6-lupdate.exe -help
+        # env\Scripts\pyside6-qmlimportscanner.exe -h
         run: |
-          #env\Scripts\pyside6-lrelease.exe -help
-          #env\Scripts\pyside6-lupdate.exe -help
           env\Scripts\pyside6-rcc.exe -h
           env\Scripts\pyside6-uic.exe -h
           env\Scripts\pyside6-qmltyperegistrar.exe -h
-          #env\Scripts\pyside6-qmlimportscanner.exe -h
           env\Scripts\pyside6-qmlcachegen.exe -h
           env\Scripts\pyside6-qmlformat.exe -h
           env\Scripts\pyside6-qmllint.exe -h
