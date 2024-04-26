@@ -94,8 +94,12 @@ jobs:
       - name: Test Tools (Qt Graphical wrappers, Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          env\Scripts\pyside6-designer.exe --help-all
-          env\Scripts\pyside6-assistant.exe -help
+          ls env\Scripts
+          # FIXME:
+          # always open a window that we need to close
+          # env\Scripts\pyside6-linguist.exe -help
+          # env\Scripts\pyside6-designer.exe --help-all
+          # env\Scripts\pyside6-assistant.exe -help
       - name: Test Tools (Qt non-graphical wrappers, Unix)
         if: matrix.os != 'windows-latest'
         run: |
