@@ -76,10 +76,13 @@ jobs:
       - name: Test Tools (Qt Graphical wrappers)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          xvfb-run --auto-servernum env/bin/pyside6-assistant -help
-          xvfb-run --auto-servernum env/bin/pyside6-designer -h
-          xvfb-run --auto-servernum env/bin/pyside6-linguist -h
+          xvfb-run --auto-servernum --server-num=1 env/bin/pyside6-assistant -help
+          xvfb-run --auto-servernum --server-num=1 env/bin/pyside6-designer -h
+          xvfb-run --auto-servernum --server-num=1 env/bin/pyside6-linguist -h
           #xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-linguist -h
+        env:
+          DISPLAY: ":1"
+          LIBGL_ALWAYS_SOFTWARE: 1
       - name: Test Tools (Qt non-graphical wrappers)
         if: matrix.os == 'ubuntu-latest'
         run: |
