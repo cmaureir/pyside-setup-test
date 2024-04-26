@@ -73,11 +73,15 @@ jobs:
         run: |
           env/bin/python -m pip install pytest
           env/bin/pytest test_wheel.py
-      - name: Test Tools (Qt wrappers)
+      - name: Test Tools (Qt Graphical wrappers)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-assistant -help
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-designer -h
           xvfb-run --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-linguist -h
+      - name: Test Tools (Qt non-graphical wrappers)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
           env/bin/pyside6-lrelease -h
           env/bin/pyside6-lupdate -h
           env/bin/pyside6-rcc -h
@@ -88,9 +92,6 @@ jobs:
           env/bin/pyside6-qmlformat -h
           env/bin/pyside6-qmllint -h
           env/bin/pyside6-qmlls -h
-        shell: bash
-        env:
-          QT_DEBUG_PLUGINS: 1
       - name: Test Tools (PySide tools)
         run: |
           env/bin/pyside6-deploy -h
