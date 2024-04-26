@@ -62,14 +62,25 @@ jobs:
           where python
           python -c "import sys; print(sys.version)"
           python -m pip install pip -U
-      - name: Install PySide
+      - name: Install PySide (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          env/bin/python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+      - name: Install PySide (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
           #python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-          env/bin/python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-      - name: Test PySide
+          env\python.exe -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+      - name: Test PySide (Unix)
+        if: matrix.os != 'windows-latest'
         run: |
           env/bin/python -m pip install pytest
           env/bin/pytest test_wheel.py
+      - name: Test PySide (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\python -m pip install pytest
+          env\pytest test_wheel.py
       - name: Test Tools (Qt Graphical wrappers, Unix)
         if: matrix.os == 'ubuntu-latest'
         run: |
