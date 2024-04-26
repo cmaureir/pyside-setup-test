@@ -81,6 +81,7 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
       - name: Test Tools (Qt Graphical wrappers, Windows)
+        if: matrix.os == 'windows-latest'
         run: |
           env\Scripts\pyside6-designer.exe --help-all
           env\Scripts\pyside6-assistant.exe -help
@@ -98,7 +99,7 @@ jobs:
           env/bin/pyside6-qmllint -h
           env/bin/pyside6-qmlls -h
       - name: Test Tools (Qt non-graphical wrappers, Unix)
-        if: matrix.os != 'windows-latest'
+        if: matrix.os == 'windows-latest'
         run: |
           env\Scripts\pyside6-lrelease.exe -help
           env\Scripts\pyside6-lupdate.exe -h
@@ -120,7 +121,7 @@ jobs:
           env/bin/pyside6-qml -h
           env/bin/pyside6-qtpy2cpp -h
       - name: Test Tools (PySide tools, Windows)
-        if: matrix.os != 'windows-latest'
+        if: matrix.os == 'windows-latest'
         run: |
           env\Scripts\pyside6-deploy.exe -h
           env\Scripts\pyside6-genpyi.exe -h
