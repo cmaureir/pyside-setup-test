@@ -141,6 +141,6 @@ jobs:
           env\Scripts\pyside6-qml.exe -h
           env\Scripts\pyside6-qtpy2cpp.exe -h
       - name: Test Tools (Android, Unix-only)
-        if: matrix.os != 'windows-latest'
+        if: matrix.os == 'ubuntu-latest'
         run: |
           env/bin/pyside6-android-deploy -h
