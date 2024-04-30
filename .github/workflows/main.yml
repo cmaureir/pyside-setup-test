@@ -100,6 +100,7 @@ jobs:
 
       - name: Simple PySide Module Test
         run: |
+          source env/bin/activate
           pytest test_wheel.py
 
           #      - name: Test Tools (Qt Graphical wrappers, Unix)
@@ -125,12 +126,14 @@ jobs:
           #
       - name: Test pyside6-rcc
         run: |
+          source env/bin/activate
           cd pyside-setup/examples/datavisualization/graphgallery
           pyside6-rcc graphgallery.qrc -o rc_graphgallery.py
           cd ../../../
 
       - name: Test pyside6-uic
         run: |
+          source env/bin/activate
           cd pyside-setup/examples/charts/chartthemes
           pyside6-uic themewidget.ui -o ui_themewidget2.py
           cd ../../../
@@ -138,6 +141,7 @@ jobs:
       - name: Test pyside6-deploy
         if: matrix.python-version != '3.12'
         run: |
+          source env/bin/activate
           echo $pwd
           cd pyside-setup/examples/widgets/widgetsgallery
           pyside6-deploy main.py
@@ -145,6 +149,7 @@ jobs:
 
       - name: Test pyside6-project
         run: |
+          source env/bin/activate
           pyside6-project new-ui myproject
           cd myproject
           pyside6-project build
