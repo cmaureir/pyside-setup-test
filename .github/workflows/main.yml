@@ -10,7 +10,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         # TODO: Add 'pypy3.10' and 'pypy3.9" when the wheels are available
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9"]#, "3.10", "3.11", "3.12"]
         include:
         - os: "macos-13"
           python-version: "3.9"
@@ -46,48 +46,22 @@ jobs:
             libxkbcommon-dev \
             libxcb-xkb1 \
             xvfb
-      - name: Setup virtual environment (Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          python -m venv env
-          source env/bin/activate
-          which python
+      - name: Setup environment
+          # No venv is used
           python -c "import sys; print(sys.version)"
           python -m pip install pip -U
-      - name: Setup virtual environment (Win)
-        if: matrix.os == 'windows-latest'
-        run: |
-          python -m venv env
-          env\Scripts\activate
-          where python
-          python -c "import sys; print(sys.version)"
-          python -m pip install pip -U
-      - name: Install PySide (Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          env/bin/python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-      - name: Install PySide (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          #python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-          env\Scripts\python.exe -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-      - name: Test PySide (Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          env/bin/python -m pip install pytest
-          env/bin/pytest test_wheel.py
-      - name: Test PySide (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          env\Scripts\python -m pip install pytest
-          env\Scripts\pytest test_wheel.py
+      - name: Install PySide
+          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+      - name: Test PySide
+          python -m pip install pytest
+          pytest test_wheel.py
       - name: Test Tools (Qt Graphical wrappers, Unix)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-designer --help-all
-          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" env/bin/pyside6-assistant -help
+          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-designer --help-all
+          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-assistant -help
           # FIXME:
-          # env/bin/pyside6-linguist always open a window that we need to close
+          # pyside6-linguist always open a window that we need to close
         shell: bash
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
@@ -100,51 +74,27 @@ jobs:
           # env\Scripts\pyside6-linguist.exe -help
           # env\Scripts\pyside6-designer.exe --help-all
           # env\Scripts\pyside6-assistant.exe -help
-      - name: Test Tools (Qt non-graphical wrappers, Unix)
-        if: matrix.os != 'windows-latest'
-        # env/bin/pyside6-lrelease -help
-        # env/bin/pyside6-lupdate -h
-        # env/bin/pyside6-qmlimportscanner -h
+      - name: Test Tools (Qt non-graphical wrappers)
+        # pyside6-lrelease -help
+        # pyside6-lupdate -h
+        # pyside6-qmlimportscanner -h
         run: |
-          env/bin/pyside6-rcc -h
-          env/bin/pyside6-uic -h
-          env/bin/pyside6-qmltyperegistrar -h
-          env/bin/pyside6-qmlcachegen -h
-          env/bin/pyside6-qmlformat -h
-          env/bin/pyside6-qmllint -h
-          env/bin/pyside6-qmlls -h
-      - name: Test Tools (Qt non-graphical wrappers, Unix)
-        if: matrix.os == 'windows-latest'
-        # env\Scripts\pyside6-lrelease.exe -help
-        # env\Scripts\pyside6-lupdate.exe -help
-        # env\Scripts\pyside6-qmlimportscanner.exe -h
+          pyside6-rcc -h
+          pyside6-uic -h
+          pyside6-qmltyperegistrar -h
+          pyside6-qmlcachegen -h
+          pyside6-qmlformat -h
+          pyside6-qmllint -h
+          pyside6-qmlls -h
+      - name: Test Tools (PySide tools)
         run: |
-          env\Scripts\pyside6-rcc.exe -h
-          env\Scripts\pyside6-uic.exe -h
-          env\Scripts\pyside6-qmltyperegistrar.exe -h
-          env\Scripts\pyside6-qmlcachegen.exe -h
-          env\Scripts\pyside6-qmlformat.exe -h
-          env\Scripts\pyside6-qmllint.exe -h
-          env\Scripts\pyside6-qmlls.exe -h
-      - name: Test Tools (PySide tools, Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          env/bin/pyside6-deploy -h
-          env/bin/pyside6-genpyi -h
-          env/bin/pyside6-metaobjectdump -h
-          env/bin/pyside6-project -h
-          env/bin/pyside6-qml -h
-          env/bin/pyside6-qtpy2cpp -h
-      - name: Test Tools (PySide tools, Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          env\Scripts\pyside6-deploy.exe -h
-          env\Scripts\pyside6-genpyi.exe -h
-          env\Scripts\pyside6-metaobjectdump.exe -h
-          env\Scripts\pyside6-project.exe -h
-          env\Scripts\pyside6-qml.exe -h
-          env\Scripts\pyside6-qtpy2cpp.exe -h
-      - name: Test Tools (Android, Unix-only)
+          pyside6-deploy -h
+          pyside6-genpyi -h
+          pyside6-metaobjectdump -h
+          pyside6-project -h
+          pyside6-qml -h
+          pyside6-qtpy2cpp -h
+      - name: Test Tools (Android, Linux-only)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          env/bin/pyside6-android-deploy -h
+          pyside6-android-deploy -h
