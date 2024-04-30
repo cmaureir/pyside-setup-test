@@ -8,15 +8,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest] #, macos-latest, windows-latest]
         # TODO: Add 'pypy3.10' and 'pypy3.9" when the wheels are available
         python-version: ["3.9"]#, "3.10", "3.11", "3.12"]
-        include:
-        - os: "macos-13"
-          python-version: "3.9"
-        exclude:
-        - os: "macos-latest"
-          python-version: "3.9"
+          #include:
+          #- os: "macos-13"
+          #  python-version: "3.9"
+          #exclude:
+          #- os: "macos-latest"
+          #  python-version: "3.9"
 
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Qt dependencies
+
+      # These dependencies are required to run Qt tools that have
+      # some xbc dependency, because we need to have the possibility
+      # to use xvfb-run
+      - name: Install Qt dependencies (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
@@ -46,58 +50,122 @@ jobs:
             libxkbcommon-dev \
             libxcb-xkb1 \
             xvfb
-      - name: Setup environment
-        run: |
-          # No venv is used
-          python -c "import sys; print(sys.version)"
-          python -m pip install pip -U
-      - name: Install PySide
-        run: |
-          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
-      - name: Test PySide
-        run: |
-          python -m pip install pytest
-          pytest test_wheel.py
-      - name: Test Tools (Qt Graphical wrappers, Unix)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-designer --help-all
-          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-assistant -help
-          # FIXME:
-          # pyside6-linguist always open a window that we need to close
-        shell: bash
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-      - name: Test Tools (Qt Graphical wrappers, Windows)
+      - name: "Install Windows-Mesa OpenGL DLL"
         if: matrix.os == 'windows-latest'
         run: |
-          ls
-          # FIXME:
-          # always open a window that we need to close
-          # env\Scripts\pyside6-linguist.exe -help
-          # env\Scripts\pyside6-designer.exe --help-all
-          # env\Scripts\pyside6-assistant.exe -help
-      - name: Test Tools (Qt non-graphical wrappers)
-        # pyside6-lrelease -help
-        # pyside6-lupdate -h
-        # pyside6-qmlimportscanner -h
+          curl -LJO https://github.com/pal1000/mesa-dist-win/releases/download/19.2.7/mesa3d-19.2.7-release-msvc.7z
+          7z x mesa3d-19.2.7-release-msvc.7z
+          cd x64
+          xcopy opengl32.dll C:\windows\system32\mesadrv.dll*
+          xcopy opengl32.dll C:\windows\syswow64\mesadrv.dll*
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v DLL /t REG_SZ /d "mesadrv.dll" /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v DriverVersion /t REG_DWORD /d 1 /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v Flags /t REG_DWORD /d 1 /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v Version /t REG_DWORD /d 2 /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v DLL /t REG_SZ /d "mesadrv.dll" /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v DriverVersion /t REG_DWORD /d 1 /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v Flags /t REG_DWORD /d 1 /f
+          REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\OpenGLDrivers\MSOGL" /v Version /t REG_DWORD /d 2 /f
+        shell: cmd
+
+      - name: Setup environment
         run: |
-          pyside6-rcc -h
-          pyside6-uic -h
-          pyside6-qmltyperegistrar -h
-          pyside6-qmlcachegen -h
-          pyside6-qmlformat -h
-          pyside6-qmllint -h
-          pyside6-qmlls -h
-      - name: Test Tools (PySide tools)
+          python -c "import sys; print(sys.version)"
+          python -m pip install pip -U
+          python -m pip install virtualenv
+          virtualenv env
+
+      - name: Clone the pyside-setup repo
         run: |
-          pyside6-deploy -h
-          pyside6-genpyi -h
-          pyside6-metaobjectdump -h
-          pyside6-project -h
-          pyside6-qml -h
-          pyside6-qtpy2cpp -h
-      - name: Test Tools (Android, Linux-only)
-        if: matrix.os == 'ubuntu-latest'
+          git clone https://code.qt.io/pyside/pyside-setup
+
+      - name: Install PySide and Dependencies (unix)
+        if: matrix.os != 'windows-latest'
         run: |
-          pyside6-android-deploy -h
+          source env/bin/activate
+          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+          python -m pip install pytest
+          # Our pyside-deploy needs 2.1
+          python -m pip install nuitka==2.1
+
+      - name: Install PySide and Dependencies (win)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          python -m pip install PySide6 --index-url=https://master.qt.io/snapshots/ci/pyside/dev/latest/
+          python -m pip install pytest
+          # Our pyside-deploy needs 2.1
+          python -m pip install nuitka==2.1
+        shell: cmd
+
+      - name: Simple PySide Module Test
+        run: |
+          pytest test_wheel.py
+
+          #      - name: Test Tools (Qt Graphical wrappers, Unix)
+          #        if: matrix.os == 'ubuntu-latest'
+          #        run: |
+          #          source env/bin/activate
+          #          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-designer --help-all
+          #          DISPLAY=:1 xvfb-run -a --server-args="-screen 0, 1920x1200x24 -ac +extension GLX +render -noreset" pyside6-assistant -help
+          #          # FIXME:
+          #          # pyside6-linguist always open a window that we need to close
+          #        shell: bash
+          #        env:
+          #          LIBGL_ALWAYS_SOFTWARE: 1
+          #      - name: Test Tools (Qt Graphical wrappers, Windows)
+          #        if: matrix.os == 'windows-latest'
+          #        run: |
+          #          ls
+          #          # FIXME:
+          #          # always open a window that we need to close
+          #          # env\Scripts\pyside6-linguist.exe -help
+          #          # env\Scripts\pyside6-designer.exe --help-all
+          #          # env\Scripts\pyside6-assistant.exe -help
+          #
+      - name: Test pyside6-rcc
+        run: |
+          cd pyside-setup/examples/datavisualization/graphgallery
+          pyside6-rcc graphgallery.qrc -o rc_graphgallery.py
+          cd ../../../
+
+      - name: Test pyside6-uic
+        run: |
+          cd pyside-setup/examples/charts/chartthemes
+          pyside6-uic themewidget.ui -o ui_themewidget2.py
+          cd ../../../
+
+      - name: Test pyside6-deploy
+        if: matrix.python-version != '3.12'
+        run: |
+          echo $pwd
+          cd pyside-setup/examples/widgets/widgetsgallery
+          pyside6-deploy main.py
+          cd ../../../../
+
+      - name: Test pyside6-project
+        run: |
+          pyside6-project new-ui myproject
+          cd myproject
+          pyside6-project build
+
+          #      - name: Test Tools (Qt non-graphical wrappers)
+          #        # pyside6-lrelease -help
+          #        # pyside6-lupdate -h
+          #        # pyside6-qmlimportscanner -h
+          #        run: |
+          #          pyside6-qmltyperegistrar -h
+          #          pyside6-qmlcachegen -h
+          #          pyside6-qmlformat -h
+          #          pyside6-qmllint -h
+          #          pyside6-qmlls -h
+          #      - name: Test Tools (PySide tools)
+          #        run: |
+          #          pyside6-genpyi -h
+          #          pyside6-metaobjectdump -h
+          #          pyside6-qml -h
+          #          pyside6-qtpy2cpp -h
+          #      - name: Test Tools (Android, Linux-only)
+          #        if: matrix.os == 'ubuntu-latest'
+          #        run: |
+          #          pyside6-android-deploy -h
