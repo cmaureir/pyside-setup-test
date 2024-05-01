@@ -98,10 +98,18 @@ jobs:
           python -m pip install nuitka==2.1
         shell: cmd
 
-      - name: Simple PySide Module Test
+      - name: Simple PySide Module Test (unix)
+        if: matrix.os != 'windows-latest'
         run: |
           source env/bin/activate
           pytest test_wheel.py
+
+      - name: Simple PySide Module Test (win)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          pytest test_wheel.py
+        shell: cmd
 
           #      - name: Test Tools (Qt Graphical wrappers, Unix)
           #        if: matrix.os == 'ubuntu-latest'
@@ -123,36 +131,78 @@ jobs:
           #          # env\Scripts\pyside6-linguist.exe -help
           #          # env\Scripts\pyside6-designer.exe --help-all
           #          # env\Scripts\pyside6-assistant.exe -help
-          #
-      - name: Test pyside6-rcc
+      # pyside6-rcc
+      - name: Test pyside6-rcc (unix)
+        if: matrix.os != 'windows-latest'
         run: |
           source env/bin/activate
           cd pyside-setup/examples/datavisualization/graphgallery
           pyside6-rcc graphgallery.qrc -o rc_graphgallery.py
           cd ../../../
 
-      - name: Test pyside6-uic
+      - name: Test pyside6-rcc (unix)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          cd pyside-setup\examples\datavisualization\graphgallery
+          pyside6-rcc.exe graphgallery.qrc -o rc_graphgallery.py
+          cd ..\..\..\
+        shell: cmd
+
+      # pyside6-uic
+      - name: Test pyside6-uic (unix)
+        if: matrix.os != 'windows-latest'
         run: |
           source env/bin/activate
           cd pyside-setup/examples/charts/chartthemes
           pyside6-uic themewidget.ui -o ui_themewidget2.py
           cd ../../../
 
-      - name: Test pyside6-deploy
-        if: matrix.python-version != '3.12'
+      - name: Test pyside6-uic (win)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          cd pyside-setup\examples\charts\chartthemes
+          pyside6-uic.exe themewidget.ui -o ui_themewidget2.py
+          cd ..\..\..\
+        shell: cmd
+
+      # pyside6-deploy
+      - name: Test pyside6-deploy (unix)
+        if: matrix.python-version != '3.12' && matrix.os != 'windows-latest'
         run: |
           source env/bin/activate
-          echo $pwd
           cd pyside-setup/examples/widgets/widgetsgallery
           pyside6-deploy main.py
           cd ../../../../
 
-      - name: Test pyside6-project
+      - name: Test pyside6-deploy (win)
+        if: matrix.python-version != '3.12' && matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          cd pyside-setup\examples\widgets\widgetsgallery
+          pyside6-deploy.exe main.py
+          cd ..\..\..\..\
+        shell: cmd
+
+      # pyside6-project
+      - name: Test pyside6-project (unix)
+        if: matrix.os != 'windows-latest'
         run: |
           source env/bin/activate
           pyside6-project new-ui myproject
           cd myproject
           pyside6-project build
+          cd ..
+
+      - name: Test pyside6-project (win)
+        if: matrix.os == 'windows-latest'
+        run: |
+          env\Scripts\activate
+          pyside6-project.exe new-ui myproject
+          cd myproject
+          pyside6-project.exe build
+          cd ..
 
           #      - name: Test Tools (Qt non-graphical wrappers)
           #        # pyside6-lrelease -help
