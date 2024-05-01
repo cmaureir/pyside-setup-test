@@ -203,6 +203,7 @@ jobs:
           cd myproject
           pyside6-project.exe build
           cd ..
+        shell: cmd
 
           #      - name: Test Tools (Qt non-graphical wrappers)
           #        # pyside6-lrelease -help
